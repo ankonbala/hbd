@@ -27,6 +27,10 @@ function fitStage() {
         $wrap.css('transform', 'scale(' + scale + ')');
     }
 
+    // expose so click/mousemove handlers can convert screen
+    // coordinates back into the canvas's real 1100x680 space
+    window.stageScale = scale;
+
     clientWidth = vw;
     clientHeight = vh;
 }

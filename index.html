@@ -102,22 +102,30 @@
         var foot = tree.footer;
         var hold = 1;
 
+        // account for the CSS scale() transform applied to #wrap by
+        // fitStage() in functions.js, so click/tap coords map back
+        // onto the canvas's real 1100x680 drawing space
+        function toCanvasCoords(e) {
+            var offset = canvas.offset();
+            var s = window.stageScale || 1;
+            return {
+                x: (e.pageX - offset.left) / s,
+                y: (e.pageY - offset.top) / s
+            };
+        }
+
         canvas.click(function(e) {
             playAudio();
-            var offset = canvas.offset(), x, y;
-            x = e.pageX - offset.left;
-            y = e.pageY - offset.top;
-            if (seed.hover(x, y)) {
+            var p = toCanvasCoords(e);
+            if (seed.hover(p.x, p.y)) {
                 hold = 0; 
                 canvas.unbind("click");
                 canvas.unbind("mousemove");
                 canvas.removeClass('hand');
             }
         }).mousemove(function(e) {
-            var offset = canvas.offset(), x, y;
-            x = e.pageX - offset.left;
-            y = e.pageY - offset.top;
-            canvas.toggleClass('hand', seed.hover(x, y));
+            var p = toCanvasCoords(e);
+            canvas.toggleClass('hand', seed.hover(p.x, p.y));
         });
 
         var seedAnimate = eval(Jscex.compile("async", function () {
